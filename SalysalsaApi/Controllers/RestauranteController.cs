@@ -39,7 +39,7 @@ namespace SalysalsaApi.Controllers
             ";
 
             DataTable table = new DataTable();
-            string sqlDataSource = _configuration.GetConnectionString("restaurenteDB");
+            string sqlDataSource = _configuration.GetConnectionString("salysalsadb");
             MySqlDataReader myReader;
             using (MySqlConnection mycon = new MySqlConnection(sqlDataSource))
             {
