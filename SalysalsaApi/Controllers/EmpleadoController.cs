@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,33 +11,31 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using SalysalsaApi.Models;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace SalysalsaApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PlatoController : ControllerBase
+    public class EmpleadoController : ControllerBase
     {
 
 
 
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _env;
-        public PlatoController(IConfiguration configuration, IWebHostEnvironment env)
+        public EmpleadoController(IConfiguration configuration, IWebHostEnvironment env)
         {
             _configuration = configuration;
             _env = env;
         }
 
-        // GET: api/<platoController>
+        // GET: api/<empleadoController>
         [HttpGet]
-         public JsonResult Get()
+        public JsonResult Get()
         {
             string query = @"
                         select *
                         from 
-                        plato
+                        empleado
             ";
 
             DataTable table = new DataTable();
@@ -63,8 +62,8 @@ namespace SalysalsaApi.Controllers
         public JsonResult Delete(int id)
         {
             string query = @"
-                        delete from plato 
-                        where id=@plato_id;
+                        delete from empleado 
+                        where id=@empleado_id;
                         
             ";
 
@@ -76,7 +75,7 @@ namespace SalysalsaApi.Controllers
                 mycon.Open();
                 using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
                 {
-                    myCommand.Parameters.AddWithValue("@plato_id", id);
+                    myCommand.Parameters.AddWithValue("@empleado_id", id);
 
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
@@ -93,16 +92,15 @@ namespace SalysalsaApi.Controllers
 
 
         [HttpPut]
-        public JsonResult Put(Plato plato)
+        public JsonResult Put(Empleado empleado)
         {
             string query = @"
-                        update plato set 
-                        titulo =@PlatoTitulo,
-                        descripcion =@PlatoDescripcion,
-                        precio=@PlatoPrecio,
-                        restaurante_id =@PlatoRestaurante_id,
-                        img =@Plato_img  
-                        where id =@PlatoId;
+                        update empleado set 
+                        nombre =@empleadoNombre,
+                        descripcion =@empleadoDescripcion,
+                        restaurante_id =@empleadoRestaurante_id,
+                        img =@empleado_img  
+                        where id =@empleadoId;
                         
             ";
 
@@ -114,13 +112,12 @@ namespace SalysalsaApi.Controllers
                 mycon.Open();
                 using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
                 {
-                    myCommand.Parameters.AddWithValue("@PlatoId", plato.id);
-                    myCommand.Parameters.AddWithValue("@PlatoTitulo", plato.titulo);
-                    myCommand.Parameters.AddWithValue("@PlatoDescripcion", plato.descripcion);
-                    myCommand.Parameters.AddWithValue("@PlatoPrecio", plato.precio);
-                    myCommand.Parameters.AddWithValue("@PlatoRestaurante_id", plato.restaurante_id);
-                    myCommand.Parameters.AddWithValue("@Plato_img", plato.img);
-                    
+                    myCommand.Parameters.AddWithValue("@empleadoId", empleado.id);
+                    myCommand.Parameters.AddWithValue("@empleadoNombre", empleado.nombre);
+                    myCommand.Parameters.AddWithValue("@empleadoDescripcion", empleado.descripcion);
+                    myCommand.Parameters.AddWithValue("@empleadoRestaurante_id", empleado.restaurante_id);
+                    myCommand.Parameters.AddWithValue("@empleado_img", empleado.img);
+
 
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
@@ -135,13 +132,13 @@ namespace SalysalsaApi.Controllers
         //CREACIÓN
 
         [HttpPost]
-        public JsonResult Post(Plato plato)
+        public JsonResult Post(Empleado empleado)
         {
             string query = @"
-                        insert into plato 
-                        (titulo,descripcion,precio,restaurante_id,img) 
+                        insert into empleado 
+                        (nombre,descripcion,restaurante_id,img) 
                         values
-                         (@PlatoTitulo,@PlatoDescripcion,@PlatoPrecio,@PlatoRestaurante_id,@Plato_img);
+                         (@empleadoTitulo,@empleadoDescripcion,@empleadoRestaurante_id,@empleado_img);
                         
             ";
 
@@ -153,11 +150,10 @@ namespace SalysalsaApi.Controllers
                 mycon.Open();
                 using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
                 {
-                    myCommand.Parameters.AddWithValue("@PlatoTitulo", plato.titulo);
-                    myCommand.Parameters.AddWithValue("@PlatoDescripcion", plato.descripcion);
-                    myCommand.Parameters.AddWithValue("@PlatoPrecio", plato.precio);
-                    myCommand.Parameters.AddWithValue("@PlatoRestaurante_id", plato.restaurante_id);
-                    myCommand.Parameters.AddWithValue("@Plato_img", plato.img);
+                    myCommand.Parameters.AddWithValue("@empleadoTitulo", empleado.nombre);
+                    myCommand.Parameters.AddWithValue("@empleadoDescripcion", empleado.descripcion);
+                    myCommand.Parameters.AddWithValue("@empleadoRestaurante_id", empleado.restaurante_id);
+                    myCommand.Parameters.AddWithValue("@empleado_img", empleado.img);
 
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);

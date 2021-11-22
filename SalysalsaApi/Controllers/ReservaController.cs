@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,33 +11,28 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using SalysalsaApi.Models;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace SalysalsaApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PlatoController : ControllerBase
+    public class ReservaController : ControllerBase
     {
-
-
-
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _env;
-        public PlatoController(IConfiguration configuration, IWebHostEnvironment env)
+        public ReservaController(IConfiguration configuration, IWebHostEnvironment env)
         {
             _configuration = configuration;
             _env = env;
         }
 
-        // GET: api/<platoController>
+        // GET: api/<reservaController>
         [HttpGet]
-         public JsonResult Get()
+        public JsonResult Get()
         {
             string query = @"
                         select *
                         from 
-                        plato
+                        reserva
             ";
 
             DataTable table = new DataTable();
@@ -63,8 +59,8 @@ namespace SalysalsaApi.Controllers
         public JsonResult Delete(int id)
         {
             string query = @"
-                        delete from plato 
-                        where id=@plato_id;
+                        delete from reserva 
+                        where id=@reserva_id;
                         
             ";
 
@@ -76,7 +72,7 @@ namespace SalysalsaApi.Controllers
                 mycon.Open();
                 using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
                 {
-                    myCommand.Parameters.AddWithValue("@plato_id", id);
+                    myCommand.Parameters.AddWithValue("@reserva_id", id);
 
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
@@ -93,16 +89,14 @@ namespace SalysalsaApi.Controllers
 
 
         [HttpPut]
-        public JsonResult Put(Plato plato)
+        public JsonResult Put(Reserva reserva)
         {
             string query = @"
-                        update plato set 
-                        titulo =@PlatoTitulo,
-                        descripcion =@PlatoDescripcion,
-                        precio=@PlatoPrecio,
-                        restaurante_id =@PlatoRestaurante_id,
-                        img =@Plato_img  
-                        where id =@PlatoId;
+                        update reserva set                    
+                        cliente_id =@reservacliente_id,
+                        servicio_id =@reservaservicio_id,
+                        fecha =@reserva_fecha  
+                        where id =@reservaId;
                         
             ";
 
@@ -114,13 +108,11 @@ namespace SalysalsaApi.Controllers
                 mycon.Open();
                 using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
                 {
-                    myCommand.Parameters.AddWithValue("@PlatoId", plato.id);
-                    myCommand.Parameters.AddWithValue("@PlatoTitulo", plato.titulo);
-                    myCommand.Parameters.AddWithValue("@PlatoDescripcion", plato.descripcion);
-                    myCommand.Parameters.AddWithValue("@PlatoPrecio", plato.precio);
-                    myCommand.Parameters.AddWithValue("@PlatoRestaurante_id", plato.restaurante_id);
-                    myCommand.Parameters.AddWithValue("@Plato_img", plato.img);
-                    
+                    myCommand.Parameters.AddWithValue("@reservaId", reserva.id);         
+                    myCommand.Parameters.AddWithValue("@reservacliente_id", reserva.cliente_id);
+                    myCommand.Parameters.AddWithValue("@reservaservicio_id", reserva.servicio_id);
+                    myCommand.Parameters.AddWithValue("@reserva_fecha", reserva.fecha);
+
 
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
@@ -135,13 +127,13 @@ namespace SalysalsaApi.Controllers
         //CREACIÓN
 
         [HttpPost]
-        public JsonResult Post(Plato plato)
+        public JsonResult Post(Reserva reserva)
         {
             string query = @"
-                        insert into plato 
-                        (titulo,descripcion,precio,restaurante_id,img) 
+                        insert into reserva 
+                        (cliente_id,servicio_id,fecha) 
                         values
-                         (@PlatoTitulo,@PlatoDescripcion,@PlatoPrecio,@PlatoRestaurante_id,@Plato_img);
+                         (@reservacliente_id,@reservaservicio_id,@reserva_fecha);
                         
             ";
 
@@ -153,11 +145,9 @@ namespace SalysalsaApi.Controllers
                 mycon.Open();
                 using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
                 {
-                    myCommand.Parameters.AddWithValue("@PlatoTitulo", plato.titulo);
-                    myCommand.Parameters.AddWithValue("@PlatoDescripcion", plato.descripcion);
-                    myCommand.Parameters.AddWithValue("@PlatoPrecio", plato.precio);
-                    myCommand.Parameters.AddWithValue("@PlatoRestaurante_id", plato.restaurante_id);
-                    myCommand.Parameters.AddWithValue("@Plato_img", plato.img);
+                    myCommand.Parameters.AddWithValue("@reservacliente_id", reserva.cliente_id);
+                    myCommand.Parameters.AddWithValue("@reservaservicio_id", reserva.servicio_id);
+                    myCommand.Parameters.AddWithValue("@reserva_fecha", reserva.fecha);
 
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
