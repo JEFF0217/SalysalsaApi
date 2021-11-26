@@ -54,6 +54,37 @@ namespace SalysalsaApi.Controllers
             return new JsonResult(table);
         }
 
+        // GET: api/<reservaController>/id
+        [HttpGet("{id}")]
+        public JsonResult Get(int id)
+        {
+            string query = @"
+                        select *
+                        from 
+                        reserva
+                        where id=@reserva_id;
+            ";
+
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("salysalsadb");
+            MySqlDataReader myReader;
+            using (MySqlConnection mycon = new MySqlConnection(sqlDataSource))
+            {
+                mycon.Open();
+                using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
+                {
+                    myCommand.Parameters.AddWithValue("@reserva_id", id);
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+
+                    myReader.Close();
+                    mycon.Close();
+                }
+            }
+
+            return new JsonResult(table);
+        }
+
         //ELIMINACION
         [HttpDelete("{id}")]
         public JsonResult Delete(int id)

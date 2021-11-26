@@ -58,6 +58,38 @@ namespace SalysalsaApi.Controllers
             return new JsonResult(table);
         }
 
+
+        // GET: api/<platoController>/id
+        [HttpGet("{id}")]
+        public JsonResult Get(int id)
+        {
+            string query = @"
+                        select *
+                        from 
+                        plato
+                        where id=@plato_id;
+            ";
+
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("salysalsadb");
+            MySqlDataReader myReader;
+            using (MySqlConnection mycon = new MySqlConnection(sqlDataSource))
+            {
+                mycon.Open();
+                using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
+                {
+                    myCommand.Parameters.AddWithValue("@plato_id", id);
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+
+                    myReader.Close();
+                    mycon.Close();
+                }
+            }
+
+            return new JsonResult(table);
+        }
+
         //ELIMINACION
         [HttpDelete("{id}")]
         public JsonResult Delete(int id)
@@ -77,7 +109,6 @@ namespace SalysalsaApi.Controllers
                 using (MySqlCommand myCommand = new MySqlCommand(query, mycon))
                 {
                     myCommand.Parameters.AddWithValue("@plato_id", id);
-
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
 
